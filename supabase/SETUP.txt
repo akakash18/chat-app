@@ -1,0 +1,12 @@
+Supabase setup
+
+1. Run supabase/schema.sql in the Supabase SQL Editor.
+2. Enable Email authentication and disable Confirm email in Supabase Auth settings. The existing username/password form maps usernames to internal email identifiers; those addresses cannot receive confirmation emails.
+3. Keep VITE_SUPABASE_URL and VITE_SUPABASE_KEY in .env. Use a publishable/anon key, never a service-role key.
+4. Register through the app. Supabase Auth stores passwords and supplies the authenticated user ID.
+5. Add your actual conversations in the conversations table using that user's Auth UUID as user_id. The data column is an array matching the Conversation type in src/types.ts: id, name, avatarClass, isOnline, unreadCount, isTyping, messages. Messages use id, text, sender (me/them), and timestamp (Unix milliseconds).
+6. Add your actual reply rules in replies: keywords is a text array, message is the reply text, and contactId is an optional conversation ID. Rules are matched in ID order, with contact-specific rules first. No matching rule means no automated reply.
+
+An empty database displays no conversations. No mock conversations or reply text are inserted. The existing UI has no conversation creation form, so conversations must be supplied through Supabase. Automated replies and typing delays are retained for online contacts with matching database rules; this change does not introduce messaging between real users.
+
+Sessions use Supabase Auth with cookie storage to preserve login across reloads without localStorage. Only session tokens are stored in cookies; account and conversation data live in Supabase. Cookies must be enabled. Existing local accounts and chats are not automatically imported.
