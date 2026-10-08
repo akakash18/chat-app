@@ -45,15 +45,6 @@ export default function ConversationList({
           <h1 className="text-2xl font-bold text-[#9552e3]">
             All Conversations
           </h1>
-
-          <button
-            onClick={onLogout}
-            title={`Log out (${username})`}
-            aria-label={`Log out ${username}`}
-            className="rounded-full p-2 text-[#9552e3] hover:bg-[#ebe8e2]"
-          >
-            <LogOut className="size-5" />
-          </button>
         </div>
 
         {/* Search */}
@@ -127,6 +118,15 @@ export default function ConversationList({
           );
         })}
       </div>
+      <button
+        onClick={onLogout}
+        title={`Log out (${username})`}
+        aria-label={`Log out ${username}`}
+        className="mx-auto my-4 flex items-center justify-center gap-1 rounded-full border border-[#9552e3] px-4 py-2 text-[#9552e3] hover:bg-[#ebe8e2]"
+      >
+        <LogOut className="size-5" />
+        <span>Logout</span>
+      </button>
     </div>
   );
 }

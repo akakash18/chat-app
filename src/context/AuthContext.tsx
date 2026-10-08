@@ -73,9 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: getEmail(username),
       password,
       options: {
-        data: {
-          username,
-        },
+        data: { username },
       },
     });
 
@@ -87,13 +85,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
     }
 
-    if (!data.session) {
-      throw new Error(
-        "Disable email confirmation in Supabase to use username registration."
-      );
+    if (!data.user) {
+      throw new Error("Registration failed.");
     }
 
-    setUser(username);
+    // Registration should NOT log the user in
+    setUser(null);
+    await supabase.auth.signOut();
   }
 
   async function login(usernameInput: string, password: string) {
@@ -111,18 +109,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           : error.message
       );
     }
-
-    setUser(username);
   }
 
   async function logout() {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      console.error("Could not log out:", error.message);
-      return;
-    }
-
+    await supabase.auth.signOut();
     setUser(null);
   }
 
@@ -133,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth(): AuthContextType {
+export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
